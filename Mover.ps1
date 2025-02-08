@@ -77,7 +77,7 @@ else {
     $max_1_size = $max_1_size.ToInt16( $null ) * 1Gb
 }
 
-if ( !$id_subfolder ) { $id_subfolder = Test-Setting -setting id_subfolder -required -default 'N' -no_ini_write }
+if ( !$id_subfolder ) { $id_subfolder = Test-Setting -setting id_subfolder -required -default 'Y' -no_ini_write }
 
 Write-Log "Указаны параметры:`nКлиент: $($client.Name)`nИсходный кусок пути: $path_from`nЦелевой кусок пути: $path_to`nКатегория: $category`nСуммарный объём: $($max_size / 1Gb)`nОбъём раздачи: $($max_1_size / 1Gb)`nСоздавать подкаталоги: $id_subfolder"
 Initialize-Client $client
@@ -113,12 +113,13 @@ if ( $client.sid ) {
             if ( $max_size -gt 0 -and $sum_size -gt $max_size ) {
                 Write-Log 'Достигнут максимальный объём'
                 $sum_size = $sum_size - $torrent.size
-                break
             }
-            $verbose = $true
-            Set-SaveLocation -client $client -torrent $torrent -new_path $new_path -verbose:$( $verbose.IsPresent ) -old_path $torrent.save_path -mess_sender ( $PSCommandPath | Split-Path -Leaf ).replace('.ps1', '')
-            Write-Progress -Activity 'Moving' -Status $torrent.name -PercentComplete ( $i * 100 / $torrents_list.Count )
-            Start-Sleep -Milliseconds 100
+			else {
+                $verbose = $true
+                Set-SaveLocation -client $client -torrent $torrent -new_path $new_path -verbose:$( $verbose.IsPresent ) -old_path $torrent.save_path -mess_sender ( $PSCommandPath | Split-Path -Leaf ).replace('.ps1', '')
+                Write-Progress -Activity 'Moving' -Status $torrent.name -PercentComplete ( $i * 100 / $torrents_list.Count )
+                Start-Sleep -Milliseconds 100
+			}
         }
     }
     Write-Progress -Activity 'Moving' -Completed
