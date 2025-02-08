@@ -111,7 +111,6 @@ if ( $client.sid ) {
         if ( $new_path -ne $torrent.save_path ) {
             $sum_size += $torrent.size
             if ( $max_size -gt 0 -and $sum_size -gt $max_size ) {
-                Write-Log 'Достигнут максимальный объём'
                 $sum_size = $sum_size - $torrent.size
             }
 			else {
@@ -122,6 +121,7 @@ if ( $client.sid ) {
 			}
         }
     }
+	Write-Log 'Достигнут максимальный объём'
     Write-Progress -Activity 'Moving' -Completed
     Write-Log "Отправлено в очередь перемещения $( to_kmg -bytes $sum_size -precision 2 )"
 }
